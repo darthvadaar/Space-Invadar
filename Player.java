@@ -16,12 +16,12 @@ public class Player{
 	public int getY(){return this.y;}
 	
 	public void moveR(){
-		this.x += 5;
+		this.x += 3;
 			
 	}
 	
 	public void moveL(){
-		this.x -= 5;		
+		this.x -= 3;		
 	}
 	
 }
