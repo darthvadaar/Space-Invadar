@@ -11,7 +11,7 @@ public class Enemy{
 	
 	
 	public Enemy(int x, int y){
-		speed = 5;
+		speed = 1;
 		this.x = x;
 		this.y = y;
 	}
@@ -19,31 +19,14 @@ public class Enemy{
 	public int getX(){return this.x;}
 	public int getY(){return this.y;}
 	
-	public boolean checkR(){
-		//returns true if there are other enemies to the right of this enemy
-		for (Enemy e: Panel.enemies){
-			if (this.x < e.x){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean checkL(){
-		//returns true if there are other enemies to the left of this enemy
-		for (Enemy e: Panel.enemies){
-			if (this.x > e.x){
-				return true;
-			}
-		}
-		return false;
+	public void stepDown(){
+		this.y += 1;
 	}
 	
 	public void moveEnemy(){
-		if (this.checkR() == false || this.checkL() == false){
-			if (this.x == 800 || this.x == 0){
-				speed *= -1;
-			}
+		if (Panel.getRight() == 800 - 30 || Panel.getLeft() == 0){
+			speed *= -1;
+			Panel.stepDown();
 		}
 		this.x += speed;
 	}

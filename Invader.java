@@ -1,5 +1,13 @@
 //Invader.java
 //Sid Bedekar
+//This is the main game file for the Space Invader remake. It handles all the graphics and the main method.
+/*
+ *Known bugs
+ *Enemies scatter
+ *Enemies move down too fast
+ *Use key typed for bullets
+ *
+ */
 
 import java.awt.*;
 import java.awt.event.*;
@@ -22,27 +30,24 @@ public class Invader extends JFrame implements ActionListener{
 		myTimer = new Timer(10, this);
 		game = new Panel(this);
 		add(game);
-		
 	}
-	
+
 	public static void main(String[]args){
 		Invader b = new Invader();
-		
 	}
 		
 	@Override
 	public void actionPerformed(ActionEvent evt){
-		game.move();
+		game.controls();
 		game.repaint();
 	}
 	
-	
 	public void start(){
 		myTimer.start();
-	
 	} 
 }
-
+//______________________________________________________
+//_______________________PANEL__________________________
 
 class Panel extends JPanel implements KeyListener{
 	private boolean []keys;
@@ -94,10 +99,10 @@ class Panel extends JPanel implements KeyListener{
     	keys[e.getKeyCode()] = false;
     }
     
-    public static int getRight(int side){
+    public static int getRight(){
     	int rightMost = -9999;
     	for (Enemy e: enemies){	
-	   		if(rightMost < e.getX()){
+	   		if(e.getX() > rightMost){
 				rightMost = e.getX();	    
     		}
     	}
@@ -107,29 +112,43 @@ class Panel extends JPanel implements KeyListener{
     public static int getLeft(){	  	
     	int leftMost = 9999;
     	for (Enemy e: enemies){	
-	   		if(leftMost < e.getX()){
+	   		if(e.getX() < leftMost){
 				leftMost = e.getX();		    
     		}
     	}
     	return leftMost;
     }
     
-    public void move(){
+    public void controls(){
 		if(keys[KeyEvent.VK_RIGHT] ){
 			p1.moveR();
 		}
 		if(keys[KeyEvent.VK_LEFT] ){
 			p1.moveL();
 		}
+		if(keys[KeyEvent.VK_SPACE] ){
+			p1.shoot();			
+		}
 		for(Enemy e : enemies){
 			e.moveEnemy();
 		}
+	}
+	
+	public static void stepDown(){
+		for (Enemy e: enemies){
+			e.stepDown();			
+		}		
 	}
     
     public void paintComponent(Graphics g){
     	g.setColor(Color.black);
 		g.fillRect(0,0,800,800);
 		g.drawImage(playerImg,p1.getX(),p1.getY(),this);
+		g.setColor(Color.green);
+		for (Projectile p : p1.getBullets()){
+			g.fillOval(p.getX(), p.getY(), 5, 5);
+			p.move();
+		}
 		for (Enemy e: enemies){
 			g.drawImage(enemyImg1,e.getX(),e.getY(),this);
 		}
