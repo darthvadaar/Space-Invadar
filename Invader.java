@@ -2,10 +2,10 @@
 //Sid Bedekar
 //This is the main game file for the Space Invader remake. It handles all the graphics and the main method.
 /*
- *Known bugs
+ *Known bugs:
  *Enemies scatter
  *Enemies move down too fast
- *Use key typed for bullets
+ *gifs dont work (dont reprint images)
  *
  */
 
@@ -39,6 +39,7 @@ public class Invader extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent evt){
 		game.controls();
+		game.move();
 		game.repaint();
 	}
 	
@@ -126,8 +127,18 @@ class Panel extends JPanel implements KeyListener{
 		if(keys[KeyEvent.VK_LEFT] ){
 			p1.moveL();
 		}
-		if(keys[KeyEvent.VK_SPACE] ){
-			p1.shoot();			
+		int pauseTime = Projectile.minusPause();
+		if (pauseTime <= 0){
+			if(keys[KeyEvent.VK_SPACE] ){
+				p1.shoot();	
+				Projectile.resetPause();
+			}
+		}
+	}
+	
+	public void move(){
+		for (Projectile p : p1.getBullets()){
+			p.move();
 		}
 		for(Enemy e : enemies){
 			e.moveEnemy();
@@ -146,12 +157,12 @@ class Panel extends JPanel implements KeyListener{
 		g.drawImage(playerImg,p1.getX(),p1.getY(),this);
 		g.setColor(Color.green);
 		for (Projectile p : p1.getBullets()){
-			g.fillOval(p.getX(), p.getY(), 5, 5);
-			p.move();
+			g.fillOval(p.getX(), p.getY(), 10, 10);
 		}
 		for (Enemy e: enemies){
 			g.drawImage(enemyImg1,e.getX(),e.getY(),this);
 		}
+		
     }
     
     
