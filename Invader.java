@@ -7,8 +7,9 @@
  *
  *Pending additions:
  *Shields
- *Collisions
+ *player hit Collisions
  *HUD (lives, score etc)
+ *UFO
  */
 
 import java.awt.*;
@@ -26,7 +27,7 @@ public class Invader extends JFrame implements ActionListener{
 	public Invader(){
 		super("Space Invader");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(800,800);
+		setSize(800,850);
 		setResizable(false);
 		setVisible(true);
 		myTimer = new Timer(10, this);
@@ -42,6 +43,7 @@ public class Invader extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent evt){
 		game.controls();
 		game.move();
+		game.enemyCollisions();
 		game.repaint();
 	}
 	
@@ -164,6 +166,23 @@ class Panel extends JPanel implements KeyListener{
 		}
 	}
 	
+	public void enemyCollisions(){
+		ArrayList<Enemy> removeE = new ArrayList<Enemy>();
+		ArrayList<Projectile> removeP = new ArrayList<Projectile>();
+		for (Projectile p : p1.getBullets()){
+			for (Enemy e : enemies){
+				if (e.getRect().intersects(p.getRect())){
+					removeE.add(e);
+					removeP.add(p);
+				}	
+			}			
+		}
+		for (Projectile p : removeP){
+			p1.removeBullet(p);		
+		}
+		enemies.removeAll(removeE);
+	}
+	
 	public static void stepDown(){
 		for (Enemy e: enemies){
 			e.stepDown();			
@@ -172,11 +191,11 @@ class Panel extends JPanel implements KeyListener{
     
     public void paintComponent(Graphics g){
     	g.setColor(Color.black);
-		g.fillRect(0,0,800,800);
+		g.fillRect(0,0,800,850);
 		g.drawImage(playerImg,p1.getX(),p1.getY(),this);
 		g.setColor(Color.green);
 		for (Projectile p : p1.getBullets()){
-			g.fillRect(p.getX(), p.getY(), 5, 10);
+			g.fillRect(p.getX(), p.getY(), p.getW(), p.getH());
 		}
 		for (Enemy e: enemies){
 			if (e.getType() == 0){
@@ -188,10 +207,14 @@ class Panel extends JPanel implements KeyListener{
 			else{
 				g.drawImage(enemyImg3,e.getX(),e.getY(),this);
 			}
-			g.fillRect((int)e.getRect().getX(), (int)e.getRect().getY(), 40, 30); /////////////////////////////////////////////////////////////////
 		}
-		
+						
     }
+    
+    
+    
+    
+    
     
     
 }

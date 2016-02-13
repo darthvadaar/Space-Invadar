@@ -32,6 +32,10 @@ public class Player{
 		bullets.add(n);
 	}
 	
+	public void removeBullet(Projectile p){
+		this.bullets.remove(p);	
+	}
+	
 	public void plusScore(){
 		this.score += 10;
 	}
