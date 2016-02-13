@@ -62,7 +62,6 @@ class Panel extends JPanel implements KeyListener{
 	
 	private static Player p1 = new Player();
 	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	public static ArrayList<Rectangle> enemyRects = new ArrayList<Rectangle>();		
 	
 	public Panel(Invader m){
 		keys = new boolean[KeyEvent.KEY_LAST+1];
@@ -85,18 +84,14 @@ class Panel extends JPanel implements KeyListener{
 				Rectangle r;
 				if (y < 80){
 					e = new Enemy(x,y,0);
-					r = new Rectangle(x,y,30,40);
 				}
 				else if(y < 120){
 					e = new Enemy(x,y,1);
-					r = new Rectangle(x,y,30,40);
 				}
 				else{
 					e = new Enemy(x,y,2);
-					r = new Rectangle(x,y,30,40);
 				}
 				enemies.add(e);
-				enemyRects.add(r);
 			}
 		}
 	}
@@ -167,8 +162,6 @@ class Panel extends JPanel implements KeyListener{
 		for(Enemy e : enemies){
 			e.moveEnemy();
 		}
-		
-
 	}
 	
 	public static void stepDown(){
@@ -195,13 +188,7 @@ class Panel extends JPanel implements KeyListener{
 			else{
 				g.drawImage(enemyImg3,e.getX(),e.getY(),this);
 			}
-		}
-		for (Rectangle r: enemyRects){
-			int x = (int)r.getX();
-			int y = (int)r.getY();
-			int w = (int)r.getWidth();
-			int h = (int)r.getHeight();
-			g.fillRect(x, y, w, h);
+			g.fillRect((int)e.getRect().getX(), (int)e.getRect().getY(), 40, 30); /////////////////////////////////////////////////////////////////
 		}
 		
     }
