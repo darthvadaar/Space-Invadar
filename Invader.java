@@ -3,10 +3,12 @@
 //This is the main game file for the Space Invader remake. It handles all the graphics and the main method.
 /*
  *Known bugs:
- *Enemies scatter
- *Enemies move down too fast
- *gifs dont work (dont reprint images)
  *
+ *
+ *Pending additions:
+ *Shields
+ *Collisions
+ *HUD (lives, score etc)
  */
 
 import java.awt.*;
@@ -54,20 +56,21 @@ class Panel extends JPanel implements KeyListener{
 	private boolean []keys;
 	private Invader mainFrame;
 	BufferedImage playerImg = null;
-	BufferedImage enemyImg1 = null;
-	BufferedImage enemyImg2 = null;
-	BufferedImage enemyImg3 = null;
+	Image enemyImg1;
+	Image enemyImg2;
+	Image enemyImg3;
 	
 	private static Player p1 = new Player();
-	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();		
+	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	public static ArrayList<Rectangle> enemyRects = new ArrayList<Rectangle>();		
 	
 	public Panel(Invader m){
 		keys = new boolean[KeyEvent.KEY_LAST+1];
 		try {
     		playerImg = ImageIO.read(new File("playerImg.png"));
-    		enemyImg1 = ImageIO.read(new File("e1.GIF"));
-    		enemyImg2 = ImageIO.read(new File("e2.gif"));
-    		enemyImg3 = ImageIO.read(new File("e3.gif"));
+    		enemyImg1 = new ImageIcon("e1.gif").getImage();
+    		enemyImg2 = new ImageIcon("e2.gif").getImage();
+    		enemyImg3 = new ImageIcon("e3.gif").getImage();
 		} 
 		catch (IOException e) {
 		}
@@ -78,8 +81,22 @@ class Panel extends JPanel implements KeyListener{
         //add all the enemies into 'enemies' array list
         for (int x = 100 ; x < 650; x += 50){	//enemies are in a 11x5 grid
 			for(int y = 0; y < 200; y += 40){
-				Enemy e = new Enemy(x,y);
+				Enemy e;
+				Rectangle r;
+				if (y < 80){
+					e = new Enemy(x,y,0);
+					r = new Rectangle(x,y,30,40);
+				}
+				else if(y < 120){
+					e = new Enemy(x,y,1);
+					r = new Rectangle(x,y,30,40);
+				}
+				else{
+					e = new Enemy(x,y,2);
+					r = new Rectangle(x,y,30,40);
+				}
 				enemies.add(e);
+				enemyRects.add(r);
 			}
 		}
 	}
@@ -104,13 +121,13 @@ class Panel extends JPanel implements KeyListener{
     	int rightMost = -9999;
     	for (Enemy e: enemies){	
 	   		if(e.getX() > rightMost){
-				rightMost = e.getX();	    
+				rightMost = e.getX();
     		}
     	}
     	return rightMost;
     }
     
-    public static int getLeft(){	  	
+    public static int getLeft(){
     	int leftMost = 9999;
     	for (Enemy e: enemies){	
 	   		if(e.getX() < leftMost){
@@ -138,11 +155,20 @@ class Panel extends JPanel implements KeyListener{
 	
 	public void move(){
 		for (Projectile p : p1.getBullets()){
-			p.move();
+			p.moveProjectile();
+		}
+		for (Enemy e : enemies){
+			int prevSpeed = Enemy.getSpeed();
+			e.changeDir();
+			if (prevSpeed != Enemy.getSpeed()){
+				break;
+			}	
 		}
 		for(Enemy e : enemies){
 			e.moveEnemy();
 		}
+		
+
 	}
 	
 	public static void stepDown(){
@@ -157,10 +183,25 @@ class Panel extends JPanel implements KeyListener{
 		g.drawImage(playerImg,p1.getX(),p1.getY(),this);
 		g.setColor(Color.green);
 		for (Projectile p : p1.getBullets()){
-			g.fillOval(p.getX(), p.getY(), 10, 10);
+			g.fillRect(p.getX(), p.getY(), 5, 10);
 		}
 		for (Enemy e: enemies){
-			g.drawImage(enemyImg1,e.getX(),e.getY(),this);
+			if (e.getType() == 0){
+				g.drawImage(enemyImg1,e.getX(),e.getY(),this);
+			}
+			else if (e.getType() == 1){
+				g.drawImage(enemyImg2,e.getX(),e.getY(),this);
+			}
+			else{
+				g.drawImage(enemyImg3,e.getX(),e.getY(),this);
+			}
+		}
+		for (Rectangle r: enemyRects){
+			int x = (int)r.getX();
+			int y = (int)r.getY();
+			int w = (int)r.getWidth();
+			int h = (int)r.getHeight();
+			g.fillRect(x, y, w, h);
 		}
 		
     }

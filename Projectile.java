@@ -23,7 +23,7 @@ public class Projectile{
 		pause = 75;
 	}
 	
-	public void move(){
+	public void moveProjectile(){
 		this.y -= speed;
 	}
 	
