@@ -3,21 +3,27 @@
 //40x25
 
 import java.util.ArrayList;
+import java.awt.Rectangle;
 
 public class Player{
-	private int x, y, lives, score;
+	private int x, y, w, l, lives, score;
 	private Projectile activeBullet;
+	private Rectangle rect;
 	
 	public Player(){
 		this.lives = 3;
 		this.x = 400;
 		this.y = 750;
+		this.w = 40;
+		this.l = 25;
 		this.activeBullet = new Projectile(-800,800); //dummy bullet with location (-800, 800) for when no bullet has been shot
+		this.rect = new Rectangle(x, y, w, l);
 		this.score = 0;
 	}
 	
 	public int getX(){return this.x;}
 	public int getY(){return this.y;}
+	public Rectangle getRect(){return this.rect;}
 	public int getLives(){return this.lives;}
 	public int getScore(){return this.score;}
 	public Projectile getBullet(){return this.activeBullet;}
@@ -27,6 +33,7 @@ public class Player{
 		if (this.x + 40 > 800){
 			this.x = 760; 		
 		}
+		this.updateRect();
 	}
 	
 	public void moveL(){
@@ -34,6 +41,16 @@ public class Player{
 		if (this.x < 0){
 			this.x = 0; 		
 		}
+		this.updateRect();
+	}
+	
+	public void updateRect(){
+			this.rect.setLocation(this.x, this.y);
+	}
+	
+	public void removeLife(){
+		this.lives -= 1;
+		//insert some kind of pause or animation
 	}
 	
 	public void shoot(){

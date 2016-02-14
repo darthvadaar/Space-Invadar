@@ -3,12 +3,13 @@
 //This is the main game file for the Space Invader remake. It handles all the graphics and the main method.
 /*
  *Known bugs:
- *Check private/publics
+ *Only last row of enemies must shoot
+ *put some kind of pause after player dies.
  *
  *Pending additions:
  *Enemy shooting and player hitbox
  *Shields
- *main menu
+ *main menu/game over screen/ instructions screen
  */
 
 import java.awt.*;
@@ -18,6 +19,8 @@ import java.awt.image.*;
 import java.io.*;
 import javax.imageio.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Invader extends JFrame implements ActionListener{
 	Timer myTimer;
@@ -137,6 +140,14 @@ class Panel extends JPanel implements KeyListener{
     	return leftMost;
     }
     
+    public static ArrayList<Enemy> getLowest(){
+    	ArrayList<Enemy> canShoot = new ArrayList<Enemy>();
+    	for (Enemy e : enemies){
+    		canShoot.add(e);
+    	}
+    	return canShoot;
+    }
+ 
    	public static void stepDown(){
 		for (Enemy e: enemies){
 			e.stepDown();
@@ -149,7 +160,7 @@ class Panel extends JPanel implements KeyListener{
 		}
 		if (ufo.getX() > 800){
 			ufoStat = false;
-			ufo.dummy();			
+			ufo.dummy();
 		}
 	}
     
@@ -169,9 +180,9 @@ class Panel extends JPanel implements KeyListener{
 	
 	public void move(){
 		if (p1.getBullet().getX() != p1.getBullet().getdummyX()  && p1.getBullet().getY() != p1.getBullet().getdummyY()){ //doesnt move dummy bullet
-			p1.getBullet().moveProjectile();
+			p1.getBullet().moveProjectile(false);
 			if (p1.getBullet().getY() < 0){
-				p1.removeBullet();				
+				p1.removeBullet();			
 			}
 		}
 		for (Enemy e : enemies){
@@ -188,6 +199,15 @@ class Panel extends JPanel implements KeyListener{
 		if (ufoStat){
 			ufo.moveEnemy();			
 		}
+		for (Enemy e : getLowest()){
+			if (e.getAlive()){
+				e.shoot();
+				e.getBullet().moveProjectile(true);			
+			}
+			if (e.getBullet().getY() > 900){
+				e.removeBullet();
+			}
+		}
 		
 	}
 	
@@ -195,11 +215,15 @@ class Panel extends JPanel implements KeyListener{
 		ArrayList<Enemy> removeE = new ArrayList<Enemy>();
 		ArrayList<Projectile> removeP = new ArrayList<Projectile>();
 		for (Enemy e : enemies){
-			if (e.getRect().intersects(p1.getBullet().getRect())){
+			if (e.getRect().intersects(p1.getBullet().getRect())){ //player hitting enemy
 				removeE.add(e);
 				p1.removeBullet();
 				p1.plusScore(e.getScore());
-			}	
+			}
+			if (p1.getRect().intersects(e.getBullet().getRect())){	//enemy hitting player
+				e.removeBullet();
+				p1.removeLife();			
+			}
 		}
 		if (ufo.getRect().intersects(p1.getBullet().getRect())){
 			p1.removeBullet();
@@ -208,8 +232,7 @@ class Panel extends JPanel implements KeyListener{
 			p1.plusScore(ufo.getScore());			
 		}
 		enemies.removeAll(removeE);
-	}
-		
+	}		
     
     public void paintComponent(Graphics g){
     	Font f = new Font("Monospaced",Font.BOLD, 20);
@@ -220,15 +243,20 @@ class Panel extends JPanel implements KeyListener{
 		g.setColor(Color.green);
 		g.fillRect(p1.getBullet().getX(), p1.getBullet().getY(), p1.getBullet().getW(), p1.getBullet().getH());
 		for (Enemy e: enemies){
-			if (e.getType() == 1){
+			if (e.getAlive()){
+				if (e.getType() == 1){
 				g.drawImage(enemyImg1,e.getX(),e.getY(),this);
+				}
+				else if (e.getType() == 2){
+					g.drawImage(enemyImg2,e.getX(),e.getY(),this);
+				}
+				else{
+					g.drawImage(enemyImg3,e.getX(),e.getY(),this);
+				}	
 			}
-			else if (e.getType() == 2){
-				g.drawImage(enemyImg2,e.getX(),e.getY(),this);
-			}
-			else{
-				g.drawImage(enemyImg3,e.getX(),e.getY(),this);
-			}
+		}
+		for(Enemy e : getLowest()){
+			g.fillRect(e.getBullet().getX(), e.getBullet().getY(), e.getBullet().getW(), e.getBullet().getH());
 		}
 		if (ufoStat){
 			g.drawImage(ufoImg, ufo.getX(), ufo.getY(), this);

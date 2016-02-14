@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 
 public class Projectile{
 	private int x, y, w, h, speed;
-	private static int pause;
 	private final int dummyX, dummyY;
 	private Rectangle rect;
 	
@@ -18,7 +17,6 @@ public class Projectile{
 		this.dummyY = 800;
 		this.speed = 5;
 		this.rect = new Rectangle(x, y, w, h);
-		pause = 75;
 	}
 	
 	public int getX(){return this.x;}
@@ -29,16 +27,13 @@ public class Projectile{
 	public int getdummyY(){return this.dummyY;}
 	public Rectangle getRect(){return this.rect;}
 	
-	public static int minusPause(){
-		return pause -= 1;
-	}
-	
-	public static void resetPause(){
-		pause = 75;
-	}
-	
-	public void moveProjectile(){
-		this.y -= speed;
+	public void moveProjectile(boolean dir){ //true = (+), false = (-)
+		if (dir){
+			this.y += speed;
+		}
+		else{
+			this.y -= speed;
+		}
 		this.updateRect();
 	}
 	
