@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 public class Projectile{
 	private int x, y, w, h, speed;
 	private static int pause;
+	private final int dummyX, dummyY;
 	private Rectangle rect;
 	
 	public Projectile(int x, int y){
@@ -13,6 +14,8 @@ public class Projectile{
 		this.y = y;
 		this.w = 5;
 		this.h = 10;
+		this.dummyX = -800;
+		this.dummyY = 800;
 		this.speed = 5;
 		this.rect = new Rectangle(x, y, w, h);
 		pause = 75;
@@ -22,6 +25,8 @@ public class Projectile{
 	public int getY(){return this.y;}
 	public int getW(){return this.w;}
 	public int getH(){return this.h;}
+	public int getdummyX(){return this.dummyX;}
+	public int getdummyY(){return this.dummyY;}
 	public Rectangle getRect(){return this.rect;}
 	
 	public static int minusPause(){
@@ -40,7 +45,5 @@ public class Projectile{
 	public void updateRect(){
 		this.rect.setLocation(this.x, this.y);
 	}
-	
-	//method for removing bullets that have travelled off screen******
 	
 }

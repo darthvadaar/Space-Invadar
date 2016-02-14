@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.awt.Rectangle;
 
 public class Enemy{
-	private int x, y, type; //type is used for image choice
+	private int x, y, type, score; //type is used for image choice
 	private static int speed;
+	private final int dummyX, dummyY;
 	private Rectangle rect;
 	
 	
@@ -17,16 +18,32 @@ public class Enemy{
 		this.y = y;
 		this.type = type;
 		this.rect = new Rectangle(x, y, 40, 30);
+		this.dummyX = -40;	//only ufo uses dummy
+		this.dummyY = 0;
+		
+		if(type == 1){
+			this.score = 30;
+		}
+		else if(type == 2){
+			this.score = 20;
+		}
+		else if(type == 3){
+			this.score = 10;
+		}
+		else{
+			this.score = 200;
+		}
 	}
 	
 	public int getX(){return this.x;}
 	public int getY(){return this.y;}
 	public int getType(){return this.type;}
 	public Rectangle getRect(){return this.rect;}
+	public int getScore(){return this.score;}
 	public static int getSpeed(){return speed;}
 	
 	public void stepDown(){
-		this.y += 20;
+		this.y += 15;
 	}
 	
 	public void changeDir(){
@@ -37,12 +54,26 @@ public class Enemy{
 	}
 	
 	public void moveEnemy(){
-		this.x += speed;
+		if (this.type == 4){
+			this.x += 1;			
+		}
+		else{
+			this.x += speed;
+		}
 		this.updateRect();
+		
 	}
 	
 	public void updateRect(){
 		this.rect.setLocation(this.x, this.y);
+	}
+	
+	public void dummy(){
+		if (this.type == 4){
+			this.x = -40;
+			this.y = 0;
+		}
+		
 	}
 	
 	
