@@ -1,6 +1,7 @@
 //Enemy.java
-//The player class for space invaders
-//40x25
+//Sid Bedekar
+//The player class for space invaders handles player attributs 
+//such as x, y, player's bullet etc.
 
 import java.util.ArrayList;
 import java.awt.Rectangle;
@@ -45,12 +46,17 @@ public class Player{
 	}
 	
 	public void updateRect(){
-			this.rect.setLocation(this.x, this.y);
+		this.rect.setLocation(this.x, this.y);
 	}
 	
 	public void removeLife(){
 		this.lives -= 1;
 		//insert some kind of pause or animation
+	}
+	
+	public void gameOver(){
+		//player gameOver means player has eliminated all enemies on screen
+		this.lives += 1;
 	}
 	
 	public void shoot(){
@@ -59,7 +65,8 @@ public class Player{
 	}
 	
 	public void removeBullet(){
-		this.activeBullet = new Projectile(activeBullet.getdummyX(),activeBullet.getdummyY());//draw it out of the game to avoid null pointers (make dummy bullet which doesnt affect game)
+		//draw it out of the game to avoid null pointers (make dummy bullet which doesnt affect game)
+		this.activeBullet = new Projectile(activeBullet.getdummyX(),activeBullet.getdummyY());
 	}
 	
 	public void plusScore(int n){

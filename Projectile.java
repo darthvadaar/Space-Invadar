@@ -1,5 +1,7 @@
 //Projectile.java
+//Sid Bedekar
 //This class handles all the projectiles in Space Invader.
+//Player and Enemy projectiles are both created through this class.
 
 import java.awt.Rectangle;
 
@@ -13,9 +15,9 @@ public class Projectile{
 		this.y = y;
 		this.w = 5;
 		this.h = 10;
-		this.dummyX = -800;
+		this.dummyX = -800;	//unshot bullets are all stored at this location
 		this.dummyY = 800;
-		this.speed = 5;
+		this.speed = 7;
 		this.rect = new Rectangle(x, y, w, h);
 	}
 	
